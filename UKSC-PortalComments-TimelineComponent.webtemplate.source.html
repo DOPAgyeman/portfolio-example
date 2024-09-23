@@ -1,0 +1,110 @@
+{% comment %} 
+    Usage: {% include 'UKSC-PortalComments-TimelineComponent' portalComments:'' %}
+{% endcomment %}
+
+<div id="ifskfj">
+    <div> 
+      <div>
+        <br>
+        <div class="dynamic-fullwidth-row-layout"><h2>Related correspondence</h2></div>
+        
+        <hr style="margin-top: 5px;">
+        <div class="dynamic-fullwidth-row-layout">
+          <p style="font-weight: bold;">Timeline</p>
+          {% if correspondenceItem.statecode.value == 0 %}
+            <a class="btn btn-primary button next submit-btn" href="#uksc_portalcomment" style="margin: 0px;" onclick="javascript:scrollToAndFocus('uksc_portalcomment','uksc_portalcomment')">Add your reply</a>
+          {% else %}
+          <a class="btn btn-primary button next submit-btn btn-disabled" href="" style="margin: 0px;">Add your reply</a>
+          {% endif %}
+        </div>
+        <br>
+      </div>
+      
+  
+      
+    </div>
+  </div>
+  
+  {% assign counter = 0 %}
+  
+  {% if portalComments.results.entities.size > 0 %}
+    {% for portalCommentsItem in portalComments.results.entities %}
+  
+    {% assign counter = counter | plus: 1 %}
+    {% assign oddEvenCheck = counter | modulo: 2 %}
+  
+    {% if oddEvenCheck == 1 %}
+      <div class="dynamic-fullwidth-row-layout" style="align-items: center;padding-bottom: 20px;">
+    {% else %}
+      <div class="dynamic-fullwidth-row-layout" style="align-items: center;background-color: rgb(251, 251, 251);padding-bottom: 20px;">
+    {% endif %}
+    
+      <div style="width: 20%;min-width: 66px;">
+        <div><span class="glyphicon glyphicon-user" style="font-size: 24px;"></span></div>
+        <div>
+          <div class="postedon">
+            <div class="timeago" style="font-size: 12px;margin-top: 10px;"></div>
+          </div>
+          <div style="margin-top: 10px;">
+            <span style="font-size: 12px;">Modified on <time style="font-size: 12px;" datetime="{{portalCommentsItem.modifiedon | date_to_iso8601}}" class="modifiedon">{{portalCommentsItem.modifiedon | date_to_iso8601 | date: 'dd/MM/yyyy HH:mm' }}</time></span>
+          </div>
+              
+        </div>
+      </div>
+      <div style="width: 75%;">
+        <div class="from">
+          {% if portalCommentsItem.uksc_submittedby and portalCommentsItem.uksc_raisedby.value == 969500001 %}
+            <h5>
+                {{portalCommentsItem.uksc_submittedby.name | escape}}
+                <span class="glyphicon glyphicon-arrow-right"></span> Registry Team
+            </h5>
+          {% else %}
+            <h5>
+              
+              <span class="glyphicon glyphicon-arrow-right"></span> 
+              {% if portalCommentsItem.uksc_party.name %}
+                {{portalCommentsItem.uksc_party.name | escape}}
+              {% elsif loggedInUsersParty %}
+                {{getLoggedInUsersParty.results.entities[0].uksc_partyid.name | escape}}
+              {% else %}
+              {% endif %}
+            </h5>
+          {% endif %}
+        </div>
+        <div class="description" style="margin-bottom: 20px"><p>{{portalCommentsItem.uksc_portalcomment | escape}}</p></div>
+          <div style="border: 1px solid #e2e2e2;padding: 14px;">
+          <div class="createdby text-muted"><span style="font-size: 15px;">Created by {{portalCommentsItem.uksc_from.name | escape}}</span></div>
+          </div>
+      </div>
+    </div>
+  
+  
+    {% endfor %}
+    {% else %}
+    <div class="dynamic-fullwidth-row-layout">
+      <div aria-label="There are no records to display." role="alert" tabindex="-1" style="display: block;width: 100%">
+        <div class="alert alert-block alert-warning">There are no records to display.</div>
+      </div>
+      </div>
+  {% endif %}
+  
+  <script>
+    if (window.jQuery) {
+    (function ($) {
+      $(document).ready(function () {
+        // Accessibility bug fixes
+        $("#uksc_submittedon").attr("aria-labelledby", "uksc_submittedon_label");
+        $("#uksc_submittedon_datepicker_description").attr("aria-describedby", "uksc_submittedon_label");
+        $("#uksc_from_label").attr("for", "uksc_from_name");
+        $("#uksc_party_label").attr("for", "uksc_party_name");
+        $("#uksc_caseid_label").attr("for", "uksc_caseid_name");
+        $("#uksc_correspondence_label").attr("for", "uksc_correspondence_name");
+        $("#uksc_submittedby_label").attr("for", "uksc_submittedby_name");
+        $("#statuscode_label").attr("for", "statuscode");
+        $("fieldset").prepend("<legend style='padding: 0; border-bottom: 0px'></legend>");
+
+      });
+    })(window.jQuery);
+  }
+  </script>
+  
